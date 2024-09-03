@@ -1,13 +1,20 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable default-case */
 import React from "react";
-
 import styled from "styled-components";
 import { motion } from "framer-motion";
-
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { smallImg } from "../utils";
 
-const GameDetail = () => {
+import playStation from "../img/playstation.png";
+import steam from "../img/steam.png";
+import xBox from "../img/xbox.png";
+import nintendo from "../img/nintendo.png";
+import apple from "../img/apple.png";
+import gamepad from "../img/gamepad.png";
+
+const GameDetail = ({ pathId }) => {
   const navigate = useNavigate();
   const exitDetailHandler = (e) => {
     const element = e.target;
@@ -18,29 +25,62 @@ const GameDetail = () => {
   };
 
   const { screen, game, isLoading } = useSelector((state) => state.detail);
+
+  const handleImageError = (e) => {
+    e.target.src = game.background_image;
+  };
+
+  const getPlatform = (platform) => {
+    switch (platform) {
+      case "PlayStation 5":
+        return playStation;
+        case "PlayStation 4":
+          return playStation;
+      case "Xbox Series S/X":
+        return xBox;
+      case "PC":
+        return steam;
+      case "Nintendo Switch":
+        return nintendo;
+      case "iOS":
+        return apple;
+      case "Gamepad":
+        return gamepad;
+      case "Xbox One":
+        return xBox;
+    }
+  };
+
   return (
     <>
       {!isLoading && (
         <CardShadow className="shadow" onClick={exitDetailHandler}>
-          <Detail>
+          <Detail layoutId={pathId}>
             <Stats>
               <div className="rating">
-                <h3>{game.name}</h3>
+                <motion.h3 layoutId={`title ${pathId}`}>{game.name}</motion.h3>
                 <p>Rating: {game.rating}</p>
               </div>
               <Info>
-                <h3>Platforms</h3>
+                <h3>Platforms:</h3>
                 <Platforms>
                   {game.platforms.map((data) => (
-                    <h3 key={data.platform.id}>{data.platform.name}</h3>
+                    <img
+                      className="img-platforms"
+                      alt={data.platform.name}
+                      key={data.platform.id}
+                      src={getPlatform(data.platform.name)}
+                    />
                   ))}
                 </Platforms>
               </Info>
             </Stats>
             <Media>
-              <img
+              <motion.img
+                layoutId={`image ${pathId}`}
                 src={smallImg(game.background_image, 1280)}
                 alt={game.background_image}
+                onError={handleImageError}
               />
             </Media>
             <Desc>
@@ -52,6 +92,7 @@ const GameDetail = () => {
                   src={smallImg(screen.image, 1280)}
                   key={screen.id}
                   alt={screen.image}
+                  onError={(e) => (e.target.src = screen.image)}
                 />
               ))}
             </div>
@@ -70,6 +111,7 @@ const CardShadow = styled(motion.div)`
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 5;
   &::-webkit--scrollbar {
     width: 0.5rem;
   }
@@ -88,8 +130,13 @@ const Detail = styled(motion.div)`
   position: absolute;
   left: 10%;
   color: black;
+  z-index: 10;
   img {
     width: 100%;
+  }
+  .img-platforms {
+    width: 30px;
+    height: 30px;
   }
 `;
 const Stats = styled(motion.div)`
