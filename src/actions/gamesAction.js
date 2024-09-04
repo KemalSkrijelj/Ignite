@@ -14,8 +14,5 @@ export const loadGames = () => async (dispatch) => {
         newGames: newGamesData.data.results,
       },
     });
-  } catch (error) {
-    console.error("Error fetching games:", error.message);
-    console.log("Full error object:", error);
-  }
+  } catch (error) {}
 };
