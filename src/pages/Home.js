@@ -9,6 +9,8 @@ import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
 import Game from "../components/Game";
 import { useLocation } from "react-router-dom";
+
+import { fadeIn } from "../animations";
 const Home = () => {
   const location = useLocation();
   const pathID = location.pathname.split("/")[2];
@@ -21,7 +23,7 @@ const Home = () => {
     (state) => state.games
   );
   return (
-    <GameList>
+    <GameList variants={fadeIn} initial="hidden" animate="show">
       <LayoutGroup type="crossfade">
         <AnimatePresence>
           {pathID && <GameDetail pathID={pathID} />}
